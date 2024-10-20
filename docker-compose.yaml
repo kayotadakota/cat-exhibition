@@ -1,0 +1,19 @@
+services:
+  web:
+    build: .
+    container_name: backend
+    ports: 
+      - "8000:8000"
+    volumes:
+      - .:/app
+    depends_on:
+      - pgdb
+  pgdb:
+    image: postgres
+    container_name: pgdb
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432:5432"

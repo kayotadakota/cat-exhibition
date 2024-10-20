@@ -1,0 +1,449 @@
+openapi: 3.0.3
+info:
+  title: Cat Management API
+  version: 1.0.0
+  description: API for accessing, editing, deleting details about cats presented at
+    the exhibition.
+paths:
+  /api/breeds/:
+    get:
+      operationId: api_breeds_list
+      description: Returns the list of all existing breeds.
+      summary: Breed list
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Breed'
+              examples:
+                /api/breeds/:
+                  value:
+                  - id: 1
+                    name: siamese
+          description: ''
+  /api/cat/add/:
+    post:
+      operationId: api_cat_add_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Cat'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Cat'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Cat'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cat'
+          description: ''
+  /api/cat/details/{id}:
+    get:
+      operationId: api_cat_details_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cat'
+          description: ''
+    put:
+      operationId: api_cat_details_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Cat'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Cat'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Cat'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cat'
+          description: ''
+    patch:
+      operationId: api_cat_details_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCat'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedCat'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCat'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cat'
+          description: ''
+    delete:
+      operationId: api_cat_details_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/cats/:
+    get:
+      operationId: api_cats_list
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Cat'
+          description: ''
+  /api/cats/breed/{breed_id}:
+    get:
+      operationId: api_cats_breed_list
+      parameters:
+      - in: path
+        name: breed_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Cat'
+          description: ''
+  /api/token/:
+    post:
+      operationId: api_token_create
+      description: |-
+        Takes a set of user credentials and returns an access and refresh JSON web
+        token pair to prove the authentication of those credentials.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenObtainPair'
+          description: ''
+  /api/token/refresh/:
+    post:
+      operationId: api_token_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+  /api/user/register/:
+    post:
+      operationId: api_user_register_create
+      description: Creates a new user. Each user has the list of owned cats.
+      summary: New user registration
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+            examples:
+              RequestExample:
+                value:
+                  username: username
+                  password: password
+                summary: Request example
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: User registered successfully.
+        '400':
+          description: Validation error.
+  /api/users/:
+    get:
+      operationId: api_users_list
+      description: Returns the list of all existing users.
+      summary: User list
+      tags:
+      - api
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+              examples:
+                /api/users/:
+                  value:
+                  - id: 1
+                    username: username
+                    ownership:
+                    - id: 1
+                      name: Cathy
+                      age: 37
+                      color: grey
+                      description: lovely cat
+                      breed: scottish fold
+                      owner: username
+          description: ''
+components:
+  schemas:
+    Breed:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 64
+      required:
+      - id
+      - name
+    Cat:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          nullable: true
+          maxLength: 64
+        age:
+          type: integer
+          maximum: 240
+          minimum: 1
+        color:
+          type: string
+          maxLength: 64
+        description:
+          type: string
+          default: ''
+        breed:
+          type: string
+        owner:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          readOnly: true
+      required:
+      - age
+      - breed
+      - color
+      - id
+      - owner
+    PatchedCat:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          nullable: true
+          maxLength: 64
+        age:
+          type: integer
+          maximum: 240
+          minimum: 1
+        color:
+          type: string
+          maxLength: 64
+        description:
+          type: string
+          default: ''
+        breed:
+          type: string
+        owner:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          readOnly: true
+    TokenObtainPair:
+      type: object
+      properties:
+        username:
+          type: string
+          writeOnly: true
+        password:
+          type: string
+          writeOnly: true
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          readOnly: true
+      required:
+      - access
+      - password
+      - refresh
+      - username
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          writeOnly: true
+      required:
+      - access
+      - refresh
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        ownership:
+          type: array
+          items:
+            $ref: '#/components/schemas/Cat'
+          readOnly: true
+      required:
+      - id
+      - ownership
+      - username
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
